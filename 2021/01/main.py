@@ -24,7 +24,7 @@ def part_two(lines: List[str]) -> str:
 
     for i in range(1, len(lines) - 2):
 
-        if sliding_window(lines[i:]) > sliding_window(lines[i-1:]):
+        if sliding_window(lines[i:]) > sliding_window(lines[i - 1:]):
             larger = larger + 1
 
     return larger

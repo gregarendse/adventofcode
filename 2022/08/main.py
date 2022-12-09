@@ -69,7 +69,6 @@ def part_one(file: str) -> int:
                 visible_trees.append(tuple((i, j)))
                 continue
 
-    print(visible_trees)
     return (len(visible_trees) + (len(trees) + len(trees[0]) - 2) * 2)
 
 
@@ -122,13 +121,6 @@ def part_two(file: str) -> int:
                 right = len(trees[i]) - j - 1
 
             score: int = left * right * up * down
-            print("{} * {} * {} * {}".format(
-                up,
-                left,
-                down,
-                right
-            ))
-            print("{} {},{} : {}".format(trees[i][j], i, j, score))
             scores.append(score)
 
     return max(scores)

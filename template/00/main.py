@@ -34,8 +34,8 @@ def part_two() -> int:
 
 
 def main():
-    print("Part One: {}".format(part_one()))
-    print("Part Two: {}".format(part_two()))
+    print("Part One: {{}}".format(part_one()))
+    print("Part Two: {{}}".format(part_two()))
 
 
 if __name__ == '__main__':

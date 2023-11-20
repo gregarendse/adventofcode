@@ -10,11 +10,13 @@ def read_from_file(file: Path) -> str:
 
 
 def __part_one__(file: Path) -> int:
+    raise Exception("Not implemented")
     content: str = read_from_file(file)
     return 0
 
 
 def __part_two__(file: Path) -> int:
+    raise Exception("Not implemented")
     content: str = read_from_file(file)
     return 0
 

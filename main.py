@@ -50,8 +50,8 @@ def init(ctx):
             f.write(example.input_data)
 
         parameters = {
-            'part_one_example_answer': int(example.answer_a) if example.answer_a is not None else 0,
-            'part_two_example_answer': int(example.answer_b) if example.answer_b is not None else 0
+            'part_one_example_answer': example.answer_a if example.answer_a is not None else 0,
+            'part_two_example_answer': example.answer_b if example.answer_b is not None else 0
         }
 
         with open("template/00/main.py") as i_f:
@@ -65,18 +65,19 @@ def init(ctx):
 @cli.command()
 @click.pass_context
 def solve(ctx):
-    puzzle = ctx.obj['puzzle']
-
-    dir = ctx.obj['dir']
-    module = "{year}.{day}.main".format(year=ctx.obj['year'], day=ctx.obj['day'])
+    puzzle: Puzzle = ctx.obj['puzzle']
+    module: str = "{year}.{day}.main".format(year=ctx.obj['year'], day=ctx.obj['day'])
     solver = importlib.import_module(module)
-    # runpy.run_path(dir + "/main.py")
 
     if not puzzle.answered_a:
-        puzzle.answer_a = solver.part_one()
+        part_one: int = solver.part_one()
+        print("Part One: {}".format(part_one))
+        puzzle.answer_a = part_one
 
     if not puzzle.answered_b:
-        puzzle.answer_b = solver.part_two()
+        part_two = solver.part_two()
+        print("Part Two: {}".format(part_two))
+        puzzle.answer_b = part_two
 
 
 if __name__ == '__main__':

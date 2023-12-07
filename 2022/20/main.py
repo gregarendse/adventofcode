@@ -34,7 +34,7 @@ def part_one(file: str) -> int:
         ans += values[position]
     return ans
 
-    original_numbers: List[int] = numbers.copy()
+    original_numbers: List[int] = numbers.iterate()
     length: int = len(numbers) - 1
 
     print(numbers)

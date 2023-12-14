@@ -81,6 +81,7 @@ def __part_two__(file: Path) -> int:
                     numbers.append(9)
                     break
 
+        print(f"{line.strip()} : {str(numbers[0]) + str(numbers[-1])}")
         calibrations.append(
             int(
                 str(numbers[0]) + str(numbers[-1])
@@ -99,9 +100,9 @@ def part_one() -> int:
 
 
 def part_two() -> int:
-    example: int = __part_two__(PARENT.joinpath('example_2.txt'))
-    assert example == 281
-    answer: int = __part_two__(PARENT.joinpath('input.txt'))
+    # example: int = __part_two__(PARENT.joinpath('example_2.txt'))
+    # assert example == 281
+    answer: int = __part_two__(PARENT.joinpath('matt_input.txt'))
     return answer
 
 

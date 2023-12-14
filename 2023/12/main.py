@@ -37,12 +37,12 @@ def parse(pattern: str, numbers: List[int]) -> int:
             idxs.append(idx)
         elif s == '#':
             fixed_characters += 1
-    possibilities: int = 2 ** len(idxs)
+    possibilities: int = 2 ** sum(numbers)
 
     patterns: List[str] = []
     n_sum: int = sum(numbers) - fixed_characters
 
-    for p in range(2 ** n_sum - 1, possibilities):
+    for p in range(possibilities):
         bin_str: str = bin(p)[2:].zfill(len(pattern))
         if bin_str.count('1') != n_sum:
             continue
@@ -139,7 +139,7 @@ def part_two() -> int:
 
 
 def main():
-    print("Part One: {}".format(part_one()))
+    # print("Part One: {}".format(part_one()))
     print("Part Two: {}".format(part_two()))
 
 

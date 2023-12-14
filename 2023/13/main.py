@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List, Set, Tuple
 
@@ -34,9 +35,9 @@ def difference_list(left: List[str], right: List[str]) -> list[tuple[int, int]]:
     return diff_list
 
 
-def find_vertical(pattern: List[str], threshold: int = 0) -> int:
+def find_vertical(pattern: List[str], threshold: int = 0) -> tuple[int, list[int]]:
     vertical_lines: List[List[int]] = []
-    differnece_map: Dict[int, List[int]] = dict()
+    differnece_map: Dict[int, List[int]] = defaultdict(list)
     for line in pattern:
         l = len(line)
         local_vertical_lines: List[int] = []
@@ -44,9 +45,9 @@ def find_vertical(pattern: List[str], threshold: int = 0) -> int:
             left: str = line[max((i - l // 2) * 2 - 1, 0):i]
             right: str = line[i:min(i + i, l)]
             difference1 = difference(left, "".join(reversed(right)))
-            if len(difference1) == threshold:
+            if len(difference1) <= threshold:
                 local_vertical_lines.append(i)
-                differnece_map[i] = difference1
+                differnece_map[i].extend(difference1)
         vertical_lines.append(local_vertical_lines)
 
     vertical_set: Set[int] = set(vertical_lines[0])
@@ -54,13 +55,14 @@ def find_vertical(pattern: List[str], threshold: int = 0) -> int:
         vertical_set = vertical_set.intersection(local_vertical_lines)
 
     if len(vertical_set):
-        pop = vertical_set.pop()
-        return pop, differnece_map.get(pop)
-    else:
-        return 0, []
+        while vertical_set:
+            pop = vertical_set.pop()
+            if len(differnece_map.get(pop)) == threshold:
+                return pop, differnece_map.get(pop)
+    return 0, []
 
 
-def find_horizontal(pattern: List[str], threshold: int = 0) -> int:
+def find_horizontal(pattern: List[str], threshold: int = 0) -> tuple[int, list[tuple[int, int]]]:
     horizontal_lines: List[int] = []
     differnece_map: Dict[int, List[Tuple[int, int]]] = dict()
     l: int = len(pattern)
@@ -83,8 +85,8 @@ def find_horizontal(pattern: List[str], threshold: int = 0) -> int:
 
 def find_reflection_point(pattern: List[str], threshold: int = 0) -> int:
 
-    vertical_line: int = find_vertical(pattern, threshold)
-    horizontal_line: int = find_horizontal(pattern, threshold)
+    vertical_line, _ = find_vertical(pattern, threshold)
+    horizontal_line, _ = find_horizontal(pattern, threshold)
 
     return vertical_line + horizontal_line * 100
 
@@ -94,8 +96,9 @@ def __part_one__(file: Path) -> int:
 
     summaries: List[int] = []
     for pattern in patterns:
+        point = find_reflection_point(pattern)
         summaries.append(
-            find_reflection_point(pattern)
+            point
         )
 
     return sum(summaries)
@@ -108,23 +111,8 @@ def __part_two__(file: Path) -> int:
     for pattern in patterns:
 
         horizontal_point, horizontal_changes = find_horizontal(pattern, 1)
-        if horizontal_point:
-            x, y = horizontal_changes.pop()
-            c: str = '.' if pattern[y][x] == '#' else '#'
-            pattern[y] = pattern[y][:x] + c + pattern[y][x:]
-            vertical_point, vertical_changes = find_vertical(pattern)
-            summaries.append(vertical_point + horizontal_point * 100)
-            continue
-
         vertical_point, vertical_changes = find_vertical(pattern, 1)
-        if vertical_point:
-            y = vertical_point
-            x = vertical_changes.pop()
-            c: str = '.' if pattern[y][x] == '#' else '#'
-            pattern[y] = pattern[y][:x] + c + pattern[y][x:]
-            horizontal_point, horizontal_changes = find_horizontal(pattern)
-            summaries.append(vertical_point + horizontal_point * 100)
-            continue
+        summaries.append(vertical_point + horizontal_point * 100)
 
     return sum(summaries)
 

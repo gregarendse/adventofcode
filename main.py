@@ -73,8 +73,7 @@ def solve(ctx):
         part_one: int = solver.part_one()
         print("Part One: {}".format(part_one))
         puzzle.answer_a = part_one
-
-    if not puzzle.answered_b:
+    elif not puzzle.answered_b:
         part_two = solver.part_two()
         print("Part Two: {}".format(part_two))
         puzzle.answer_b = part_two

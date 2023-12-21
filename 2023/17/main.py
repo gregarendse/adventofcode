@@ -1,7 +1,8 @@
 #!/usr/bin/env python
-from collections import deque
+from collections import deque, defaultdict
+from copy import copy
 from pathlib import Path
-from typing import List, Tuple, Set
+from typing import List, Tuple, Dict
 
 PARENT = Path(__file__).parent
 
@@ -17,32 +18,50 @@ def read_from_file(file: Path) -> list[list[int]]:
 
 
 def shortest_path(start: Tuple[int, int], end: Tuple[int, int], heat_loss_map: list[list[int]]) -> int:
-    q: deque[Tuple[Tuple[int, int], int]] = deque([(start, 0)])
-    history: Set[Tuple[int, int]] = set()
+    q: deque[Tuple[Tuple[int, int], List[int], List[Tuple[int, int]], List[Tuple[int, int]]]] = deque(
+        [(start, [], [], [])])
+    min_map: Dict[Tuple[int, int], int] = defaultdict(lambda: 999999999)
 
     while q:
-        position, count = q.popleft()
+        (x, y), heat_losses, moves, history = q.popleft()
 
-        if position == end:
-            return count
+        heat_loss = sum(heat_losses)
+        if heat_loss > min_map[(x, y)]:
+            continue
+        else:
+            min_map[(x, y)] = heat_loss
+            final_state = heat_losses
 
         for (dx, dy) in [(1, 0), (0, 1), (-1, 0), (0, -1)]:
-            position_next: Tuple[int, int] = (position[0] + dx, position[1] + dy)
+            (x_next, y_next) = (x + dx, y + dy)
 
-            if 0 <= position_next[1] < len(heat_loss_map) \
-                    and 0 <= position_next[0] < len(heat_loss_map[position_next[1]]) \
-                    and position_next not in history:
-                q.append((position_next, count + 1))
-                history.add(position_next)
-    raise Exception("Not Found :(")
+            momentum: list[tuple[int, int]] = moves[max(len(moves) - 3, 0):]
+
+            if 0 <= y_next < len(heat_loss_map) \
+                    and 0 <= x_next < len(heat_loss_map[y_next]) \
+                    and (x_next, y_next) not in history \
+                    and ((len(momentum) < 3) or (len(set(momentum)) > 1) or (dx, dy) not in momentum):
+                moves.append((dx, dy))
+                history.append((x, y))
+                heat_losses.append(heat_loss_map[y_next][x_next])
+                q.append(
+                    (
+                        (x_next, y_next),
+                        copy(heat_losses),
+                        copy(moves),
+                        copy(history)
+                    )
+                )
+
+    return min_map[end]
 
 
 def __part_one__(file: Path) -> int:
     heat_loss_map: list[list[int]] = read_from_file(file)
     start: Tuple[int, int] = (0, 0)
-    end: Tuple[int, int] = (len(heat_loss_map), len(heat_loss_map[-1]))
+    end: Tuple[int, int] = (len(heat_loss_map) - 1, len(heat_loss_map[-1]) - 1)
     count: int = shortest_path(start=start, end=end, heat_loss_map=heat_loss_map)
-    return 0
+    return count
 
 
 def __part_two__(file: Path) -> int:

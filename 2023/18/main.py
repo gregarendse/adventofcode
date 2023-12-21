@@ -170,8 +170,8 @@ def pnpoly(vertices: List[Tuple[int, int]], point: Tuple[int, int]) -> bool:
     c: bool = False
 
     for current in vertices:
-        if on_line((previous, current), point):
-            return True
+        # if on_line((previous, current), point):
+        #     return True
         if ((current[1] > point[1]) != (previous[1] > point[1])) and \
                 (point[0] < (previous[0] - current[0]) * (point[1] - current[1]) / (previous[1] - current[1]) + current[
                     0]):
@@ -195,7 +195,7 @@ def __part_one__(file: Path) -> int:
     terrain_map: dict[tuple[int, int], DigPlan] = dig(dig_plans)
     (x_max, y_max), (x_min, y_min) = get_dimensions(terrain_map)
     vertices: list[tuple[int, int]] = [key for key, value in terrain_map.items()]
-    # display(vertices, x_max, y_max, x_min, y_min)
+    display(vertices, x_max, y_max, x_min, y_min)
 
     count: List[Tuple[int, int]] = []
 
@@ -208,7 +208,7 @@ def __part_one__(file: Path) -> int:
             if pnpoly(vertices, (x, y)):
                 count.append((x, y))
 
-    # display(count, x_max, y_max, x_min, y_min)
+    display(count, x_max, y_max, x_min, y_min)
     return len(count)
 
 
@@ -272,8 +272,8 @@ def __part_two__(file: Path) -> int:
 def part_one() -> int:
     example: int = __part_one__(PARENT.joinpath('example.txt'))
     assert example == 62
-    answer: int = __part_one__(PARENT.joinpath('input.txt'))
-    return answer
+    # answer: int = __part_one__(PARENT.joinpath('input.txt'))
+    # return answer
 
 
 def part_two() -> int:
